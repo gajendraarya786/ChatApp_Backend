@@ -1,6 +1,8 @@
 import { Message } from "../models/message.models.js";
+import { socketAuth } from "../middlewares/socketAuth.middleware.js";
 
 const socketHandler = (io) => {
+    io.use(socketAuth); 
     io.on("connection", (socket) => {
         console.log("Socket connected: ", socket.id);
 
