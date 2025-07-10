@@ -76,7 +76,7 @@ const login = async (req, res) => {
        //sending cookies
        const options = {
         httpOnly: true,
-        secure: false,
+        secure: true,
         sameSite: "lax",    // <--- "lax" is safest for localhost
         path: "/",    
        }
