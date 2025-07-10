@@ -78,6 +78,7 @@ const login = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "none",
+        path: "/"
        }
 
        return res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken", refreshToken, options)
@@ -98,27 +99,35 @@ const logout = async (req, res) => {
     // Optional: Invalidate refresh token in DB
     if (refreshToken) {
       const user = await User.findOne({ refreshToken });
-
       if (user) {
-        user.refreshToken = null;
-        await user.save({ validateBeforeSave: false });
+        await User.findByIdAndUpdate(
+          user._id,
+          {
+            $set: {
+              refreshToken: undefined
+            }
+          },
+          {
+            new: true
+          }
+        );
       }
     }
 
-    // Clear cookies
-    res.clearCookie("accessToken", {
+    // Clear cookies with exact same options as login
+    const options = {
       httpOnly: true,
       secure: true,
-    });
-
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: true,
-    });
+      sameSite: "none",
+      path: "/"
+    };
 
     return res
       .status(httpStatus.OK)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
       .json(new ApiResponse(200, {}, "User logged out successfully"));
+      
   } catch (error) {
     console.error("Logout error:", error);
     return res
@@ -126,6 +135,5 @@ const logout = async (req, res) => {
       .json({ message: "Something went wrong during logout" });
   }
 };
-
 
 export { register, login, logout };
