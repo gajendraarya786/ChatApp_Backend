@@ -77,8 +77,7 @@ const login = async (req, res) => {
        const options = {
         httpOnly: true,
         secure: true,
-        sameSite: "lax",    // <--- "lax" is safest for localhost
-        path: "/",    
+        sameSite: "none",
        }
 
        return res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken", refreshToken, options)
