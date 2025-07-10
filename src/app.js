@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser'
 
 //importing routes
 import userRouter from './routes/user.routes.js'
+import messageRouter from './routes/message.routes.js';
 
 
 dotenv.config();
@@ -43,6 +44,7 @@ app.get("/", (req, res) => {
 
 //routes
 app.use("/api/v1/users", userRouter);
+app.use('/api/v1/chat', messageRouter);
 
 
 socketHandler(io);
